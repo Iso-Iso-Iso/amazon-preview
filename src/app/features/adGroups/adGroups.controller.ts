@@ -13,7 +13,7 @@ export class AdGroupsController {
         const a = this.adGroupsApiService.getSponsoredProductAdGroups(784281538626439, 489084269240230).subscribe({
             error: (err: AxiosError) => {
                 // console.log(err.code);
-                // console.log(err);
+                console.log("catch");
             },
             next: (res) => {
                 console.log("smth get now");

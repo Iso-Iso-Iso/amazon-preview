@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { CredentialService } from "../../userCredentialManager/services/credential.service";
 import { HttpService } from "@nestjs/axios";
@@ -25,17 +25,16 @@ export class AxiosService {
     }
 
     async onResponseInterceptor(error: AxiosError) {
-        console.log("intercept");
-        console.log(error.response.status);
+        error.response.status = 403;
         if (error.response.status !== 401 || (error.response.status === 401 && error.request.isRefreshed)) {
             // TODO: handle error on request
-            console.log("in");
-            return error;
+            throw new Error(JSON.stringify(error));
+            // return error;
         }
         error.request.isRefreshed = true;
 
-        const refreshed = await this.credentialService.issueNewTokens();
-        // console.log(error.config, "error.request.headers");
+        await this.credentialService.issueNewTokens();
+
         return this.httpService.axiosRef.request(error.config);
     }
 }
