@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { CredentialService } from "../../userCredentialManager/services/credential.service";
 import { HttpService } from "@nestjs/axios";
 

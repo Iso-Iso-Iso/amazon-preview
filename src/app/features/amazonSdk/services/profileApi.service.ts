@@ -2,7 +2,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { AxiosResponse } from "axios";
 import { HttpService } from "@nestjs/axios";
-import * as process from "process";
 
 @Injectable()
 export class ProfileApiService {

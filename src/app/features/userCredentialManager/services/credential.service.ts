@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import * as process from "process";
 import { HttpService } from "@nestjs/axios";
-import { map } from "rxjs";
 
 @Injectable()
 export class CredentialService {

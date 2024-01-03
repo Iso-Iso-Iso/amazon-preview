@@ -1,7 +1,7 @@
 import { Controller, Inject } from "@nestjs/common";
 import { GrpcMethod } from "@nestjs/microservices";
 import { ProfileApiService } from "../amazonSdk/services/profileApi.service";
-import { Axios, AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 @Controller()
 export class ProfilesController {

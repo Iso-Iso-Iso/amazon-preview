@@ -1,6 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { Observable } from "rxjs";
-import { HttpService } from "@nestjs/axios";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class AdGroupsService {}
