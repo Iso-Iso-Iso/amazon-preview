@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package AdGroups;
+
+import "google/protobuf/empty.proto";
+
+service AdGroupsServiceV1 {
+  rpc getSponsoredProductAdGroups (google.protobuf.Empty) returns (google.protobuf.Empty) {}
+}

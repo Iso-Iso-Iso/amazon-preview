@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package Campaign;
+
+service CampaignServiceV1 {
+  rpc getSponsoredProductCampaigns(google.protobuf.Empty) returns (Campaigns) {};
+}
+
+message Campaigns {
+  string text = 1;
+}
