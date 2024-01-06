@@ -1,20 +1,24 @@
 import { Module } from "@nestjs/common";
-import { ReportSchedulerController } from "./reportScheduler.controller";
-import { ReportSchedulerService } from "./reportScheduler.service";
-import { HttpModule } from "@nestjs/axios";
 import { ScheduleModule } from "@nestjs/schedule";
 import { BullModule } from "@nestjs/bull";
 import { QueueNames } from "../../constants/queueNames";
-import { ReportSchedulerConsumer } from "./reportScheduler.consumer";
+import { ReportCreationConsumer } from "./consumer/reportCreation.consumer";
+import { ReportManagerService } from "./services/reportManager.service";
+import { ReportScheduler } from "./scheduler/report.scheduler";
+import { AmazonSdkModule } from "../amazonSdk/amazonSdk.module";
+import { ReportDownloadConsumer } from "./consumer/reportDownload.consumer";
 
 @Module({
     imports: [
-        HttpModule,
+        AmazonSdkModule,
         ScheduleModule.forRoot(),
         BullModule.registerQueue({
-            name: QueueNames.REPORT_QUEUE,
+            name: QueueNames.REPORT_CREATION_QUEUE,
+        }),
+        BullModule.registerQueue({
+            name: QueueNames.REPORT_DOWNLOAD_QUEUE,
         }),
     ],
-    providers: [ReportSchedulerService, ReportSchedulerController, ReportSchedulerConsumer],
+    providers: [ReportScheduler, ReportManagerService, ReportCreationConsumer, ReportDownloadConsumer],
 })
 export class ReportSchedulerModule {}

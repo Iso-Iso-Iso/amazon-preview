@@ -16,6 +16,10 @@ export class AxiosService {
     onRequestInterceptor(
         value: InternalAxiosRequestConfig<any>,
     ): InternalAxiosRequestConfig<any> | Promise<InternalAxiosRequestConfig<any>> {
+        if (value.responseType === "arraybuffer") {
+            return value;
+        }
+
         const { clientId, accessToken } = this.credentialService.getUserCredentials();
 
         value.headers.set("Amazon-Advertising-API-ClientId", clientId);
@@ -25,10 +29,10 @@ export class AxiosService {
     }
 
     async onResponseInterceptor(error: AxiosError) {
-        error.response.status = 403;
         if (error.response.status !== 401 || (error.response.status === 401 && error.request.isRefreshed)) {
+            console.log(error);
             // TODO: handle error on request
-            throw new Error(JSON.stringify(error));
+            throw new Error("error");
             // return error;
         }
         error.request.isRefreshed = true;

@@ -6,11 +6,12 @@ import { CampaignApiService } from "./services/campaignApi.service";
 import { ProfileApiService } from "./services/profileApi.service";
 import { AxiosService } from "./api/axios.service";
 import { CredentialService } from "../userCredentialManager/services/credential.service";
+import { ReportsApiService } from "./services/reportsApi.service";
 
 @Module({
     imports: [UserCredentialManagerModule, HttpModule],
-    providers: [AxiosService, AdGroupsApiService, CampaignApiService, ProfileApiService],
-    exports: [HttpModule, AdGroupsApiService, CampaignApiService, ProfileApiService],
+    providers: [AxiosService, AdGroupsApiService, CampaignApiService, ProfileApiService, ReportsApiService],
+    exports: [HttpModule, AdGroupsApiService, CampaignApiService, ProfileApiService, ReportsApiService],
 })
 export class AmazonSdkModule implements OnModuleInit {
     constructor(

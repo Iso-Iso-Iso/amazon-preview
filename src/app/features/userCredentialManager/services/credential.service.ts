@@ -35,7 +35,7 @@ export class CredentialService {
 
             this.refreshToken = data.refresh_token;
             this.accessToken = data.access_token;
-
+            console.log("log new token issued");
             return res;
         } catch (e) {
             console.log(e);
