@@ -1,5 +1,5 @@
 import { Process, Processor } from "@nestjs/bull";
-import { QueueNames } from "../../../constants/queueNames";
+import { QueueNames } from "../../../shared/constants/queueNames";
 import { Job } from "bull";
 import { ReportsApiService } from "../../amazonSdk/services/reportsApi.service";
 import { ReportManagerService } from "../services/reportManager.service";

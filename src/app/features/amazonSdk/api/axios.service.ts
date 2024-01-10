@@ -29,11 +29,11 @@ export class AxiosService {
     }
 
     async onResponseInterceptor(error: AxiosError) {
-        if (error.response.status !== 401 || (error.response.status === 401 && error.request.isRefreshed)) {
+        // TODO: fix unauthorized loop
+        if (error.response.status !== 401 || error.request.isRefreshed) {
             console.log(error);
             // TODO: handle error on request
             throw new Error("error");
-            // return error;
         }
         error.request.isRefreshed = true;
 

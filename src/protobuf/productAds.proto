@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package ProductAds;
+
+service ProductAdsServiceV1 {
+  rpc getSponsoredProductAds(ProductAdsByProfileId) returns (ProductAds) {};
+}
+
+message ProductAdsByProfileId  {
+  uint64 profileId = 1;
+}
+
+message ProductAds {
+  repeated ProductAdItem data = 1;
+}
+
+message ProductAdItem {
+  string adGroupId = 1;
+  string adId = 2;
+  string asin = 3;
+  string campaignId = 4;
+  string sku = 5;
+  string state = 6;
+}

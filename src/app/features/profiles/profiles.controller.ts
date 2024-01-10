@@ -2,6 +2,7 @@ import { Controller, Inject } from "@nestjs/common";
 import { GrpcMethod } from "@nestjs/microservices";
 import { ProfileApiService } from "../amazonSdk/services/profileApi.service";
 import { AxiosError } from "axios";
+import { map } from "rxjs";
 
 @Controller()
 export class ProfilesController {
@@ -10,15 +11,10 @@ export class ProfilesController {
 
     @GrpcMethod("ProfileServiceV1", "getProfiles")
     getProfiles() {
-        this.profileApiService.getProfiles().subscribe({
-            next: (res) => {
-                console.log(res);
-            },
-            error: (err: AxiosError) => {
-                console.log("err");
-                console.log(err);
-            },
-        });
-        return;
+        return this.profileApiService.getProfiles().pipe(
+            map((res) => ({
+                data: res.data,
+            })),
+        );
     }
 }

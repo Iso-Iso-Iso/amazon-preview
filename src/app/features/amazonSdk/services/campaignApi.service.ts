@@ -6,8 +6,7 @@ import { AxiosResponse } from "axios";
 
 @Injectable()
 export class CampaignApiService {
-    @Inject()
-    private readonly httpService: HttpService;
+    constructor(private readonly httpService: HttpService) {}
 
     getSponsoredProductCampaigns(profileId: number): Observable<AxiosResponse> {
         return this.httpService.post(

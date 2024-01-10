@@ -1,15 +1,18 @@
 import { Process, Processor } from "@nestjs/bull";
-import { QueueNames } from "../../../constants/queueNames";
+import { QueueNames } from "../../../shared/constants/queueNames";
 import { ReportManagerService } from "../services/reportManager.service";
 import { ReportsApiService } from "../../amazonSdk/services/reportsApi.service";
 import { map } from "rxjs";
-import { ReportsStatus } from "../../../constants/reports";
+import { ReportsStatus } from "../../../shared/constants/reports";
+import { groupBy as _groupBy } from "lodash";
+import { ReportsService } from "../services/reports.service";
 
 @Processor(QueueNames.REPORT_DOWNLOAD_QUEUE)
 export class ReportDownloadConsumer {
     constructor(
         private readonly reportManagerService: ReportManagerService,
         private readonly reportsApiService: ReportsApiService,
+        private readonly reportsService: ReportsService,
     ) {}
 
     @Process()
@@ -26,9 +29,17 @@ export class ReportDownloadConsumer {
                 }
 
                 console.log("<========Ready for download =======>");
-                this.reportsApiService.getUncompressedData(res.url).subscribe((res) => {
-                    console.log(res);
+                this.reportsApiService.getUncompressedData(res.url).subscribe(async (res) => {
+                    if (!res.length) {
+                        return;
+                    }
+
+                    res.forEach(async (item) => {
+                        await this.reportsService.upsertMetric(item);
+                    });
                 });
             });
     }
+
+    saveProductMetrics() {}
 }

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package Metrics;
+
+service MetricsServiceV1 {
+  rpc getMetrics(MetricsByDate) returns (Metrics) {}
+}
+
+
+message MetricsByDate {
+  string startDate = 1;
+  string endDate = 2;
+  string asin = 3;
+}
+
+message Metrics {
+  repeated MetricItem data = 1;
+}
+
+message MetricItem {
+    float spend = 1;
+    float costPerClick = 2;
+    int32 clicks = 3;
+    float sales = 4;
+    int32 orders = 5;
+    int32 impressions = 6;
+    int32 units = 7;
+    string date = 8;
+
+}

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package Profile;
+
+service ProfileServiceV1 {
+  rpc getProfiles(google.protobuf.Empty) returns (Profiles) {}
+}
+
+message Profiles {
+  repeated ProfileItem data = 1;
+}
+
+message ProfileItem {
+  uint64 profileId = 1;
+  string countryCode = 2;
+  string currencyCode = 3;
+  int32 dailyBudget = 4;
+  string timezone = 5;
+  AccountInfo accountInfo = 6;
+}
+
+message AccountInfo {
+  string marketplaceStringId = 1;
+  string id = 2;
+  string type = 3;
+  string name = 4;
+  string subType = 5;
+  bool validPaymentMethod = 6;
+}

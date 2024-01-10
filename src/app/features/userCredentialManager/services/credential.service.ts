@@ -40,6 +40,7 @@ export class CredentialService {
         } catch (e) {
             console.log(e);
             console.log("refresh error");
+            throw new Error("err");
         }
     }
 }

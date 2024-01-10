@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-import "google/protobuf/empty.proto";
-
-package Profile;
-
-service ProfileServiceV1 {
-  rpc getProfiles(google.protobuf.Empty) returns (google.protobuf.Empty) {}
-}

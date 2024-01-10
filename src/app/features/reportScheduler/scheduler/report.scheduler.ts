@@ -3,12 +3,14 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { ProfileApiService } from "../../amazonSdk/services/profileApi.service";
 import { ReportManagerService } from "../services/reportManager.service";
 import { map } from "rxjs";
+import { ReportsService } from "../services/reports.service";
 
 @Injectable()
 export class ReportScheduler {
     constructor(
         private readonly profileApiService: ProfileApiService,
         private readonly reportManagerService: ReportManagerService,
+        private readonly reportsService: ReportsService,
     ) {}
 
     @Cron(CronExpression.EVERY_30_SECONDS)

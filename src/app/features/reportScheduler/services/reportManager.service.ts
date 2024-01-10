@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ReportBodySchema } from "../../amazonSdk/types/reports";
 import { format, subDays } from "date-fns";
 import { InjectQueue } from "@nestjs/bull";
-import { QueueNames } from "../../../constants/queueNames";
+import { QueueNames } from "../../../shared/constants/queueNames";
 import { Queue } from "bull";
 
 const AMAZON_DATE_FORMAT = "yyyy-MM-dd";
@@ -22,7 +22,18 @@ export class ReportManagerService {
                 format: "GZIP_JSON",
                 adProduct: "SPONSORED_PRODUCTS",
                 timeUnit: "DAILY",
-                columns: ["advertisedAsin", "clicks", "cost"],
+                columns: [
+                    "advertisedAsin",
+                    "clicks",
+                    "costPerClick",
+                    "spend",
+                    "sales1d",
+                    "purchases1d",
+                    "date",
+                    "impressions",
+                    "unitsSoldSameSku1d",
+                    "campaignId"
+                ],
                 reportTypeId: "spAdvertisedProduct",
                 groupBy: ["advertiser"],
             },

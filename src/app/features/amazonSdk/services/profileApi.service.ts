@@ -5,8 +5,7 @@ import { HttpService } from "@nestjs/axios";
 
 @Injectable()
 export class ProfileApiService {
-    @Inject()
-    private readonly httpService: HttpService;
+    constructor(private readonly httpService: HttpService) {}
 
     getProfiles(): Observable<AxiosResponse> {
         return this.httpService.get("/v2/profiles", {
