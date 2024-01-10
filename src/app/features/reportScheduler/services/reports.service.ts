@@ -28,7 +28,7 @@ export class ReportsService {
         });
         if (!metric) {
             await this.metricsModel.create<MetricsModel>({
-                date: formatISO(date),
+                date: date,
                 costPerClick: costPerClick,
                 campaignId,
                 spend,
@@ -44,7 +44,7 @@ export class ReportsService {
 
         return this.metricsModel.update<MetricsModel>(
             {
-                date: formatISO(date),
+                date: date,
                 costPerClick: costPerClick ?? 0,
                 campaignId,
                 spend,
