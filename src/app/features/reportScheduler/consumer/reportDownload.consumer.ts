@@ -34,9 +34,8 @@ export class ReportDownloadConsumer {
                         return;
                     }
 
-                    res.forEach(async (item) => {
-                        await this.reportsService.upsertMetric(item);
-                    });
+                    const promised = res.map(async (item) => this.reportsService.upsertMetric(item));
+                    await Promise.all(promised);
                 });
             });
     }
