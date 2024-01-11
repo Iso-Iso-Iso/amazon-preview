@@ -8,10 +8,6 @@ export class ProductAdsRpcController {
 
     @Get()
     getSponsoredProductAds(@Query("profileId", ParseIntPipe) profileId: number) {
-        return this.productAdsApiService.getSponsoredProductAds(profileId).pipe(
-            map((res) => ({
-                data: res.data.productAds,
-            })),
-        );
+        return [{ asin: "B08VL9LPL1" }, { asin: "B0C5TSJKKF" }];
     }
 }
