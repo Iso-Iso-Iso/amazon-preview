@@ -1,14 +1,13 @@
-import { Controller } from "@nestjs/common";
+import { Controller, Get, Param, ParseIntPipe, Query } from "@nestjs/common";
 import { ProductAdsApiService } from "../amazonSdk/services/productAdsApi.service";
 import { map } from "rxjs";
-import { GrpcMethod } from "@nestjs/microservices";
 
-@Controller()
+@Controller("/api/productAds")
 export class ProductAdsRpcController {
     constructor(private readonly productAdsApiService: ProductAdsApiService) {}
 
-    @GrpcMethod("ProductAdsServiceV1", "getSponsoredProductAds")
-    getSponsoredProductAds({ profileId }) {
+    @Get()
+    getSponsoredProductAds(@Query("profileId", ParseIntPipe) profileId: number) {
         return this.productAdsApiService.getSponsoredProductAds(profileId).pipe(
             map((res) => ({
                 data: res.data.productAds,

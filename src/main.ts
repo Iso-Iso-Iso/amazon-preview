@@ -1,24 +1,10 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
-import { MicroserviceOptions, Transport } from "@nestjs/microservices";
-import * as path from "path";
+import * as process from "process";
 
 async function bootstrap() {
-    const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-        transport: Transport.GRPC,
-        options: {
-            package: ["Campaign", "Profile", "AdGroups", "Metrics", "ProductAds"],
-            protoPath: [
-                path.resolve("src", "protobuf", "campaign.proto"),
-                path.resolve("src", "protobuf", "profile.proto"),
-                path.resolve("src", "protobuf", "adGroups.proto"),
-                path.resolve("src", "protobuf", "metrics.proto"),
-                path.resolve("src", "protobuf", "productAds.proto"),
-            ],
-            url: "localhost:3000",
-        },
-    });
+    const app = await NestFactory.create(AppModule);
 
-    await app.listen();
+    await app.listen(+process.env.PORT);
 }
 bootstrap();
