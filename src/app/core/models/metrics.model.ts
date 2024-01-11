@@ -23,6 +23,11 @@ export class MetricsModel extends BaseModel {
     campaignId: number;
 
     @Column({
+        type: DataType.BIGINT.UNSIGNED,
+    })
+    adGroupId: number;
+
+    @Column({
         type: DataType.FLOAT,
     })
     costPerClick: number;

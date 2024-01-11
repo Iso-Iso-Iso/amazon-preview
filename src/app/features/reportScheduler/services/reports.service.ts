@@ -18,16 +18,19 @@ export class ReportsService {
         purchases1d,
         impressions,
         advertisedAsin,
+        adGroupId,
     }) {
         const metric = await this.metricsModel.findOne({
             where: {
                 date,
                 campaignId,
                 asin: advertisedAsin,
+                adGroupId,
             },
         });
+
         if (!metric) {
-            await this.metricsModel.create<MetricsModel>({
+            return this.metricsModel.create<MetricsModel>({
                 date: date,
                 costPerClick: costPerClick,
                 campaignId,
@@ -38,8 +41,8 @@ export class ReportsService {
                 orders: purchases1d,
                 impressions,
                 asin: advertisedAsin,
+                adGroupId,
             });
-            return;
         }
 
         return this.metricsModel.update<MetricsModel>(
@@ -54,9 +57,10 @@ export class ReportsService {
                 orders: purchases1d,
                 impressions,
                 asin: advertisedAsin,
+                adGroupId,
             },
             {
-                where: { date, campaignId, asin: advertisedAsin },
+                where: { date, campaignId, asin: advertisedAsin, adGroupId },
             },
         );
     }

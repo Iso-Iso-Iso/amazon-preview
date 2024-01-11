@@ -32,7 +32,8 @@ export class ReportManagerService {
                     "date",
                     "impressions",
                     "unitsSoldSameSku1d",
-                    "campaignId"
+                    "campaignId",
+                    "adGroupId",
                 ],
                 reportTypeId: "spAdvertisedProduct",
                 groupBy: ["advertiser"],
