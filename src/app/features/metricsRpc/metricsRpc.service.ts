@@ -27,6 +27,6 @@ export class MetricsRpcService {
     }
 
     mapMetric(metricName): ProjectionAlias {
-        return [sequelize.cast(sequelize.fn("SUM", sequelize.col(metricName)), "DECIMAL(10,6)"), metricName];
+        return [sequelize.fn("SUM", sequelize.col(metricName)), metricName];
     }
 }
