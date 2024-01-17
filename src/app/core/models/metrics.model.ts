@@ -61,4 +61,19 @@ export class MetricsModel extends BaseModel {
         type: DataType.INTEGER,
     })
     units: number;
+
+    @Column({
+        type: DataType.FLOAT,
+    })
+    clickThroughRate: number;
+
+    @Column({
+        type: DataType.FLOAT,
+    })
+    roasClicks: number;
+
+    @Column({
+        type: DataType.FLOAT,
+    })
+    acosClicks: number;
 }

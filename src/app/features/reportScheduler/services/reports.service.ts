@@ -1,13 +1,29 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { MetricsModel } from "../../../core/models/metrics.model";
-import { formatISO } from "date-fns";
 
 @Injectable()
 export class ReportsService {
     constructor(@InjectModel(MetricsModel) private readonly metricsModel: typeof MetricsModel) {}
 
-    async upsertMetric({
+    async upsertMetric(reportMetric) {
+        const finder = this.createMetricUniqueFinder(reportMetric);
+        const metricUpsertBody = this.prepareMetricUpsertView(reportMetric);
+
+        const metric = await this.metricsModel.findOne({
+            where: finder,
+        });
+
+        if (!metric) {
+            return this.metricsModel.create<MetricsModel>(metricUpsertBody);
+        }
+
+        return this.metricsModel.update<MetricsModel>(metricUpsertBody, {
+            where: finder,
+        });
+    }
+
+    private prepareMetricUpsertView({
         date,
         costPerClick,
         campaignId,
@@ -19,49 +35,29 @@ export class ReportsService {
         impressions,
         advertisedAsin,
         adGroupId,
+        clickThroughRate,
+        roasClicks7d,
+        acosClicks7d,
     }) {
-        const metric = await this.metricsModel.findOne({
-            where: {
-                date,
-                campaignId,
-                asin: advertisedAsin,
-                adGroupId,
-            },
-        });
+        return {
+            date: date,
+            costPerClick: costPerClick,
+            campaignId,
+            spend,
+            units: unitsSoldSameSku1d,
+            clicks,
+            sales: sales1d,
+            orders: purchases1d,
+            impressions,
+            asin: advertisedAsin,
+            adGroupId,
+            clickThroughRate,
+            roasClicks: roasClicks7d,
+            acosClicks: acosClicks7d,
+        };
+    }
 
-        if (!metric) {
-            return this.metricsModel.create<MetricsModel>({
-                date: date,
-                costPerClick: costPerClick,
-                campaignId,
-                spend,
-                units: unitsSoldSameSku1d,
-                clicks,
-                sales: sales1d,
-                orders: purchases1d,
-                impressions,
-                asin: advertisedAsin,
-                adGroupId,
-            });
-        }
-
-        return this.metricsModel.update<MetricsModel>(
-            {
-                date: date,
-                costPerClick: costPerClick ?? 0,
-                campaignId,
-                spend,
-                units: unitsSoldSameSku1d,
-                clicks,
-                sales: sales1d,
-                orders: purchases1d,
-                impressions,
-                asin: advertisedAsin,
-                adGroupId,
-            },
-            {
-                where: { date, campaignId, asin: advertisedAsin, adGroupId },
-            },
-        );
+    private createMetricUniqueFinder({ date, campaignId, advertisedAsin, adGroupId }) {
+        return { date, campaignId, asin: advertisedAsin, adGroupId };
     }
 }

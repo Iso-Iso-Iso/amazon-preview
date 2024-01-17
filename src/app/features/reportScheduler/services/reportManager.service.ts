@@ -16,7 +16,7 @@ export class ReportManagerService {
 
     createReportBody(): ReportBodySchema {
         return {
-            startDate: format(subDays(new Date(), 14), AMAZON_DATE_FORMAT),
+            startDate: format(subDays(new Date(), 30), AMAZON_DATE_FORMAT),
             endDate: format(new Date(), AMAZON_DATE_FORMAT),
             configuration: {
                 format: "GZIP_JSON",
@@ -34,6 +34,9 @@ export class ReportManagerService {
                     "unitsSoldSameSku1d",
                     "campaignId",
                     "adGroupId",
+                    "clickThroughRate",
+                    "roasClicks7d",
+                    "acosClicks7d",
                 ],
                 reportTypeId: "spAdvertisedProduct",
                 groupBy: ["advertiser"],
