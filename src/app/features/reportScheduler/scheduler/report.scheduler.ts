@@ -13,7 +13,7 @@ export class ReportScheduler {
         private readonly reportsService: ReportsService,
     ) {}
 
-    @Cron(CronExpression.EVERY_10_MINUTES)
+    @Cron(CronExpression.EVERY_30_SECONDS)
     createReports() {
         console.log("schedule");
         this.profileApiService
