@@ -18,4 +18,18 @@ export class MetricsRpcController {
         const metrics = await this.metricsRpcService.getMetrics(asin, { startDate, endDate });
         return { data: metrics };
     }
+
+    @Get("/total")
+    async getTotalMetrics(
+        @Query("asin") asin: string,
+        @Query("startDate") startDate: string,
+        @Query("endDate") endDate: string,
+    ) {
+        if (!asin || !startDate || !endDate) {
+            throw new BadRequestException("bad request");
+        }
+
+        const metrics = await this.metricsRpcService.getMetricsTotal(asin, { startDate, endDate });
+        return { data: metrics };
+    }
 }

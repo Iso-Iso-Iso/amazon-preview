@@ -4,9 +4,14 @@ import { MetricsModel } from "../../core/models/metrics.model";
 import sequelize, { Op, ProjectionAlias } from "sequelize";
 import { formatISO } from "date-fns";
 
+type MetricFilters = {
+    startDate: string;
+    endDate: string;
+};
+
 @Injectable()
 export class MetricsRpcService {
-    private readonly METRICS = [
+    private readonly metricNames = [
         "spend",
         "costPerClick",
         "clicks",
@@ -14,29 +19,56 @@ export class MetricsRpcService {
         "orders",
         "impressions",
         "units",
-        "clickThroughRate",
-        "roasClicks",
-        "acosClicks",
     ];
 
     constructor(@InjectModel(MetricsModel) private readonly metricsModel: typeof MetricsModel) {}
 
-    async getMetrics(asin: string, { startDate, endDate }) {
+    async getMetrics(asin: string, filters: MetricFilters) {
+        const finder = this.createFinder(asin, filters);
+
         const metrics = await this.metricsModel.findAll({
-            attributes: [...this.METRICS.map(this.mapMetric), "date", "asin"],
-            where: {
-                asin,
-                date: {
-                    [Op.gte]: formatISO(startDate),
-                    [Op.lte]: formatISO(endDate),
-                },
-            },
+            attributes: [...this.metricNames.map(this.mapMetric), "date", "asin"],
+            where: finder,
             group: ["asin", "date"],
             order: [["date", "ASC"]],
             raw: true,
         });
 
-        return metrics.map((i) => {
+        return this.calculateComputedMetrics(metrics);
+    }
+
+    async getMetricsTotal(asin: string, filters: MetricFilters) {
+        const finder = this.createFinder(asin, filters);
+
+        const metrics = await this.metricsModel.findAll({
+            attributes: [...this.metricNames.map(this.mapMetric), "asin"],
+            where: finder,
+            group: ["asin"],
+            raw: true,
+        });
+
+        return this.calculateComputedMetrics(metrics);
+    }
+
+    private mapMetric(metricName): ProjectionAlias {
+        return [sequelize.fn("SUM", sequelize.col(metricName)), metricName];
+    }
+
+    private createFinder(asin: string, { startDate, endDate }: MetricFilters) {
+        return {
+            asin,
+            date: {
+                [Op.gte]: formatISO(startDate),
+                [Op.lte]: formatISO(endDate),
+            },
+        };
+    }
+
+    // TODO: do it in db side or move in another compute function
+    private calculateComputedMetrics(metrics: MetricsModel[]) {
+        const metricsCopy = metrics.slice();
+
+        return metricsCopy.map((i) => {
             const costPerClick = i.spend / +i.clicks || 0;
             const acos = (i.spend / i.sales) * 100 || 0;
             const roas = i.sales / i.spend;
@@ -46,15 +78,11 @@ export class MetricsRpcService {
             return {
                 ...i,
                 costPerClick,
-                acosClicks: acos,
-                roasClicks: roas,
+                acos: acos,
+                roas: roas,
                 clickThroughRate: ctr,
                 conversationRate: cvr,
             };
         });
-    }
-
-    private mapMetric(metricName): ProjectionAlias {
-        return [sequelize.fn("SUM", sequelize.col(metricName)), metricName];
     }
 }
