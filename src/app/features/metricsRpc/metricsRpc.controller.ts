@@ -21,7 +21,7 @@ export class MetricsRpcController {
 
     @Get("/profile")
     async getMetricsPerProfile(
-        @Query("asin", ParseIntPipe) profileId: number,
+        @Query("profileId", ParseIntPipe) profileId: number,
         @Query("startDate") startDate: string,
         @Query("endDate") endDate: string,
     ) {
