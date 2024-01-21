@@ -60,9 +60,9 @@ export class MetricsRpcService {
         const finder = this.createFinderForProfile(profile, filters);
 
         const metrics = await this.metricsModel.findAll({
-            attributes: [...this.metricNames.map(this.mapMetric), "profileId"],
+            attributes: [...this.metricNames.map(this.mapMetric), "profileId", "asin"],
             where: finder,
-            group: ["profileId"],
+            group: ["profileId", "asin"],
             raw: true,
         });
 
