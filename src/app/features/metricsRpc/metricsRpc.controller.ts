@@ -8,15 +8,23 @@ export class MetricsRpcController {
     @Get()
     async getMetrics(
         @Query("asin") asin: string,
+        @Query("profileId", new ParseIntPipe({ optional: true })) profileId: number,
         @Query("startDate") startDate: string,
         @Query("endDate") endDate: string,
     ) {
-        if (!asin || !startDate || !endDate) {
+        if ((!asin && !profileId) || !startDate || !endDate) {
             throw new BadRequestException("bad request");
         }
 
-        const metrics = await this.metricsRpcService.getMetrics(asin, { startDate, endDate });
-        return { data: metrics };
+        if (asin) {
+            const metrics = await this.metricsRpcService.getMetrics(asin, { startDate, endDate });
+            return { data: metrics };
+        }
+
+        if (profileId) {
+            const metrics = await this.metricsRpcService.getMetricsPerProfile(profileId, { startDate, endDate });
+            return { data: metrics };
+        }
     }
 
     @Get("/profile")
