@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Param, Query, ValidationPipe } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Param, ParseIntPipe, Query, ValidationPipe } from "@nestjs/common";
 import { MetricsRpcService } from "./metricsRpc.service";
 
 @Controller("/api/metrics")
@@ -16,6 +16,20 @@ export class MetricsRpcController {
         }
 
         const metrics = await this.metricsRpcService.getMetrics(asin, { startDate, endDate });
+        return { data: metrics };
+    }
+
+    @Get("/profile")
+    async getMetricsPerProfile(
+        @Query("asin", ParseIntPipe) profileId: number,
+        @Query("startDate") startDate: string,
+        @Query("endDate") endDate: string,
+    ) {
+        if (!profileId || !startDate || !endDate) {
+            throw new BadRequestException("bad request");
+        }
+
+        const metrics = await this.metricsRpcService.getMetricsPerProfile(profileId, { startDate, endDate });
         return { data: metrics };
     }
 

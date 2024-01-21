@@ -12,6 +12,11 @@ export class MetricsModel extends BaseModel {
     date: Date;
 
     @Column({
+        type: DataType.BIGINT.UNSIGNED,
+    })
+    profileId: number;
+
+    @Column({
         type: DataType.STRING(24),
         allowNull: false,
     })

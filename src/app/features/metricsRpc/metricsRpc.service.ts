@@ -11,20 +11,12 @@ type MetricFilters = {
 
 @Injectable()
 export class MetricsRpcService {
-    private readonly metricNames = [
-        "spend",
-        "costPerClick",
-        "clicks",
-        "sales",
-        "orders",
-        "impressions",
-        "units",
-    ];
+    private readonly metricNames = ["spend", "costPerClick", "clicks", "sales", "orders", "impressions", "units"];
 
     constructor(@InjectModel(MetricsModel) private readonly metricsModel: typeof MetricsModel) {}
 
     async getMetrics(asin: string, filters: MetricFilters) {
-        const finder = this.createFinder(asin, filters);
+        const finder = this.createFinderForProduct(asin, filters);
 
         const metrics = await this.metricsModel.findAll({
             attributes: [...this.metricNames.map(this.mapMetric), "date", "asin"],
@@ -37,8 +29,22 @@ export class MetricsRpcService {
         return this.calculateComputedMetrics(metrics);
     }
 
+    async getMetricsPerProfile(profileId: number, filters: MetricFilters) {
+        const finder = this.createFinderForProfile(profileId, filters);
+
+        const metrics = await this.metricsModel.findAll({
+            attributes: [...this.metricNames.map(this.mapMetric), "date", "profileId"],
+            where: finder,
+            group: ["profileId", "date"],
+            order: [["date", "ASC"]],
+            raw: true,
+        });
+
+        return this.calculateComputedMetrics(metrics);
+    }
+
     async getMetricsTotal(asin: string, filters: MetricFilters) {
-        const finder = this.createFinder(asin, filters);
+        const finder = this.createFinderForProduct(asin, filters);
 
         const metrics = await this.metricsModel.findAll({
             attributes: [...this.metricNames.map(this.mapMetric), "asin"],
@@ -54,9 +60,19 @@ export class MetricsRpcService {
         return [sequelize.fn("SUM", sequelize.col(metricName)), metricName];
     }
 
-    private createFinder(asin: string, { startDate, endDate }: MetricFilters) {
+    private createFinderForProduct(asin: string, { startDate, endDate }: MetricFilters) {
         return {
             asin,
+            date: {
+                [Op.gte]: formatISO(startDate),
+                [Op.lte]: formatISO(endDate),
+            },
+        };
+    }
+
+    private createFinderForProfile(profileId: number, { startDate, endDate }: MetricFilters) {
+        return {
+            profileId,
             date: {
                 [Op.gte]: formatISO(startDate),
                 [Op.lte]: formatISO(endDate),

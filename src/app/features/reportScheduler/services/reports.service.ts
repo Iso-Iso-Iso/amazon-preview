@@ -6,9 +6,9 @@ import { MetricsModel } from "../../../core/models/metrics.model";
 export class ReportsService {
     constructor(@InjectModel(MetricsModel) private readonly metricsModel: typeof MetricsModel) {}
 
-    async upsertMetric(reportMetric) {
-        const finder = this.createMetricUniqueFinder(reportMetric);
-        const metricUpsertBody = this.prepareMetricUpsertView(reportMetric);
+    async upsertMetric(profileId: number, reportMetric) {
+        const finder = this.createMetricUniqueFinder(profileId, reportMetric);
+        const metricUpsertBody = this.prepareMetricUpsertView(profileId, reportMetric);
 
         const metric = await this.metricsModel.findOne({
             where: finder,
@@ -23,23 +23,27 @@ export class ReportsService {
         });
     }
 
-    private prepareMetricUpsertView({
-        date,
-        costPerClick,
-        campaignId,
-        spend,
-        unitsSoldSameSku1d,
-        clicks,
-        sales1d,
-        purchases1d,
-        impressions,
-        advertisedAsin,
-        adGroupId,
-        clickThroughRate,
-        roasClicks7d,
-        acosClicks7d,
-    }) {
+    private prepareMetricUpsertView(
+        profileId: number,
+        {
+            date,
+            costPerClick,
+            campaignId,
+            spend,
+            unitsSoldSameSku1d,
+            clicks,
+            sales1d,
+            purchases1d,
+            impressions,
+            advertisedAsin,
+            adGroupId,
+            clickThroughRate,
+            roasClicks7d,
+            acosClicks7d,
+        },
+    ) {
         return {
+            profileId,
             date: date,
             costPerClick: costPerClick,
             campaignId,
@@ -57,7 +61,7 @@ export class ReportsService {
         };
     }
 
-    private createMetricUniqueFinder({ date, campaignId, advertisedAsin, adGroupId }) {
-        return { date, campaignId, asin: advertisedAsin, adGroupId };
+    private createMetricUniqueFinder(profileId: number, { date, campaignId, advertisedAsin, adGroupId }) {
+        return { date, campaignId, asin: advertisedAsin, adGroupId, profileId };
     }
 }
