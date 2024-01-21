@@ -56,6 +56,19 @@ export class MetricsRpcService {
         return this.calculateComputedMetrics(metrics);
     }
 
+    async getMetricsTotalByProfile(profile: number, filters: MetricFilters) {
+        const finder = this.createFinderForProfile(profile, filters);
+
+        const metrics = await this.metricsModel.findAll({
+            attributes: [...this.metricNames.map(this.mapMetric), "profileId"],
+            where: finder,
+            group: ["profileId"],
+            raw: true,
+        });
+
+        return this.calculateComputedMetrics(metrics);
+    }
+
     private mapMetric(metricName): ProjectionAlias {
         return [sequelize.fn("SUM", sequelize.col(metricName)), metricName];
     }
