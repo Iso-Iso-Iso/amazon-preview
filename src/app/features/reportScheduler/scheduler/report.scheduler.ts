@@ -27,4 +27,10 @@ export class ReportScheduler {
                 });
             });
     }
+    // TODO remake in future
+    @Cron(CronExpression.EVERY_30_SECONDS)
+    async validateMetrics() {
+        const metrics = await this.reportsService.getMetricsToValidate();
+        this.reportsService.validateMetrics(metrics)
+    }
 }

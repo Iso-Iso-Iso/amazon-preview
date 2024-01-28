@@ -33,7 +33,7 @@ export class ReportDownloadConsumer {
                     if (!res.length) {
                         return;
                     }
-
+                    console.log(res);
                     const promised = res.map(async (item) => this.reportsService.upsertMetric(profileId, item));
                     await Promise.all(promised);
                 });
