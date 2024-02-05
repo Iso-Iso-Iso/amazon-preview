@@ -24,6 +24,7 @@ import { MetricsModel } from "./models/metrics.model";
             redis: {
                 host: process.env.REDIS_HOST,
                 port: +process.env.REDIS_PORT,
+                enableTLSForSentinelMode: true,
             },
         }),
     ],
