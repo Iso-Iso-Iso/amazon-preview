@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { MetricsModel } from "../../core/models/metrics.model";
 import sequelize, { Op, ProjectionAlias } from "sequelize";
-import { formatISO } from "date-fns";
 
 type MetricFilters = {
     startDate: string;
@@ -77,8 +76,8 @@ export class MetricsRpcService {
         return {
             asin,
             date: {
-                [Op.gte]: formatISO(startDate),
-                [Op.lte]: formatISO(endDate),
+                [Op.gte]: startDate,
+                [Op.lte]: endDate,
             },
         };
     }
@@ -87,8 +86,8 @@ export class MetricsRpcService {
         return {
             profileId,
             date: {
-                [Op.gte]: formatISO(startDate),
-                [Op.lte]: formatISO(endDate),
+                [Op.gte]: startDate,
+                [Op.lte]: endDate,
             },
         };
     }
